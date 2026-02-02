@@ -2,7 +2,7 @@ import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
-  title: 'Project Vault - Interview Prep Knowledge Base',
+  title: 'COPREPER - Interview Prep Knowledge Base',
   description: 'Store and revise your software projects before interviews',
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "project-vault-backend",
   "version": "1.0.0",
-  "description": "Backend API for Project Vault - Interview prep knowledge base",
+  "description": "Backend API for COPREPER - Interview prep knowledge base",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

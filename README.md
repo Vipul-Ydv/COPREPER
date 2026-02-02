@@ -1,4 +1,4 @@
-# 🎯 Project Vault
+# 🎯 COPREPER
 
 > **A personal knowledge base for CS students to store, organize, and revise their software projects before technical interviews.**
 
@@ -23,9 +23,9 @@ You build impressive projects during coursework and hackathons, but when intervi
 
 ## ✅ The Solution
 
-Project Vault is a structured interview prep tool that transforms scattered project memories into organized, interview-ready material.
+COPREPER is a structured interview prep tool that transforms scattered project memories into organized, interview-ready material.
 
-| Without Project Vault | With Project Vault |
+| Without COPREPER | With COPREPER |
 |-----------------------|-------------------|
 | "I think I used... some caching?" | "I implemented Redis caching with a 5-minute TTL to reduce DB load by 60%" |
 | Scrambling through old repos | One-click access to annotated code snippets |

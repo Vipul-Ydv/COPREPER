@@ -74,7 +74,7 @@ export default function ProjectDetailPage() {
         <div className={styles.page}>
             <nav className="navbar">
                 <Link href="/dashboard" className="navbar-brand">
-                    🎯 Project Vault
+                    🎯 COPREPER
                 </Link>
                 <div className="navbar-nav">
                     <Link href="/projects/new" className="btn btn-primary">

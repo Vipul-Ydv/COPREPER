@@ -35,8 +35,8 @@ export default function LoginPage() {
         <div className={styles.container}>
             <div className={styles.card}>
                 <div className={styles.logo}>🎯</div>
-                <h1 className={styles.title}>Project Vault</h1>
-                <p className={styles.subtitle}>Own your projects. Ace your interviews.</p>
+                <h1 className={styles.title}>COPREPER</h1>
+                <p className={styles.subtitle}>Because 'I built that' hits different.</p>
 
                 <div className={styles.tabs}>
                     <button

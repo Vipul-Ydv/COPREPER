@@ -28,7 +28,7 @@ export default function SettingsPage() {
         <div className={styles.page}>
             <nav className="navbar">
                 <Link href="/dashboard" className="navbar-brand">
-                    🎯 Project Vault
+                    🎯 COPREPER
                 </Link>
                 <div className="navbar-nav">
                     <Link href="/dashboard" className={styles.navLink}>
@@ -71,7 +71,7 @@ export default function SettingsPage() {
                 <div className={styles.section}>
                     <h2 className={styles.sectionTitle}>About</h2>
                     <p className={styles.aboutText}>
-                        Project Vault v1.0.0
+                        COPREPER v1.0.0
                         <br />
                         Built for CS students preparing for technical interviews.
                     </p>

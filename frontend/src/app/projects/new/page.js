@@ -72,7 +72,7 @@ export default function NewProjectPage() {
         <div className={styles.page}>
             <nav className="navbar">
                 <Link href="/dashboard" className="navbar-brand">
-                    🎯 Project Vault
+                    🎯 COPREPER
                 </Link>
                 <div className="navbar-nav">
                     <button onClick={logout} className={styles.logoutBtn}>
