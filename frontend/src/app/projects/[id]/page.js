@@ -52,7 +52,7 @@ export default function ProjectDetailPage() {
     if (authLoading || loading) {
         return (
             <div className={styles.loadingContainer}>
-                <div className="spinner"></div>
+                <div className="spinner spinner-lg"></div>
             </div>
         );
     }
@@ -71,21 +71,39 @@ export default function ProjectDetailPage() {
     const techStack = project.techStack || [];
 
     return (
-        <div className={styles.page}>
-            <nav className="navbar">
-                <Link href="/dashboard" className="navbar-brand">
-                    🎯 COPREPER
-                </Link>
-                <div className="navbar-nav">
-                    <Link href="/projects/new" className="btn btn-primary">
-                        + Add Project
+        <div className={styles.layout}>
+            {/* Sidebar */}
+            <aside className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <Link href="/dashboard" className={styles.logo}>
+                        <span className={styles.logoIcon}>🎯</span>
+                        <span className={styles.logoText}>COPREPER</span>
                     </Link>
+                </div>
+
+                <nav className={styles.sidebarNav}>
+                    <Link href="/dashboard" className={styles.navItem}>
+                        <span className={styles.navIcon}>📊</span>
+                        Dashboard
+                    </Link>
+                    <Link href="/projects/new" className={styles.navItem}>
+                        <span className={styles.navIcon}>➕</span>
+                        New Project
+                    </Link>
+                    <Link href="/settings" className={styles.navItem}>
+                        <span className={styles.navIcon}>⚙️</span>
+                        Settings
+                    </Link>
+                </nav>
+
+                <div className={styles.sidebarFooter}>
                     <button onClick={logout} className={styles.logoutBtn}>
                         Logout
                     </button>
                 </div>
-            </nav>
+            </aside>
 
+            {/* Main Content */}
             <main className={styles.main}>
                 <div className={styles.header}>
                     <Link href="/dashboard" className={styles.backLink}>
@@ -96,7 +114,7 @@ export default function ProjectDetailPage() {
                             🎯 Practice Interview
                         </Link>
                         <Link href={`/projects/${id}/edit`} className="btn btn-secondary">
-                            Edit Project
+                            Edit
                         </Link>
                         <button onClick={handleDelete} className="btn btn-danger">
                             Delete

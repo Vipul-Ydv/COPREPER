@@ -50,95 +50,187 @@ export default function DashboardPage() {
     if (authLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
-                <div className="spinner"></div>
+                <div className="spinner spinner-lg"></div>
             </div>
         );
     }
 
     return (
-        <div className={styles.page}>
-            <nav className="navbar">
-                <Link href="/dashboard" className="navbar-brand">
-                    🎯 COPREPER
-                </Link>
-                <div className="navbar-nav">
-                    <Link href="/projects/new" className="btn btn-primary">
-                        + Add Project
+        <div className={styles.layout}>
+            {/* Sidebar */}
+            <aside className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <Link href="/dashboard" className={styles.logo}>
+                        <span className={styles.logoIcon}>🎯</span>
+                        <span className={styles.logoText}>COPREPER</span>
                     </Link>
-                    <Link href="/settings" className={styles.navLink}>
+                </div>
+
+                <nav className={styles.sidebarNav}>
+                    <Link href="/dashboard" className={`${styles.navItem} ${styles.active}`}>
+                        <span className={styles.navIcon}>📊</span>
+                        Dashboard
+                    </Link>
+                    <Link href="/projects/new" className={styles.navItem}>
+                        <span className={styles.navIcon}>➕</span>
+                        New Project
+                    </Link>
+                    <Link href="/settings" className={styles.navItem}>
+                        <span className={styles.navIcon}>⚙️</span>
                         Settings
                     </Link>
+                </nav>
+
+                <div className={styles.sidebarFooter}>
+                    <div className={styles.userInfo}>
+                        <div className={styles.userAvatar}>
+                            {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        </div>
+                        <div className={styles.userDetails}>
+                            <span className={styles.userName}>{user.displayName}</span>
+                            <span className={styles.userEmail}>{user.email}</span>
+                        </div>
+                    </div>
                     <button onClick={logout} className={styles.logoutBtn}>
                         Logout
                     </button>
                 </div>
-            </nav>
+            </aside>
 
+            {/* Main Content */}
             <main className={styles.main}>
-                <div className={styles.header}>
-                    <div>
-                        <h1 className={styles.title}>Welcome back, {user.displayName}!</h1>
-                        <p className={styles.subtitle}>
-                            {projects.length === 0
-                                ? 'Start adding your projects for interview prep'
-                                : `You have ${projects.length} project${projects.length !== 1 ? 's' : ''} ready`}
-                        </p>
-                    </div>
-                    <div className={styles.searchContainer}>
+                {/* Top Bar */}
+                <header className={styles.topBar}>
+                    <div className={styles.searchBox}>
+                        <span className={styles.searchIcon}>🔍</span>
                         <input
                             type="text"
-                            className="input"
-                            placeholder="🔍 Search projects..."
+                            placeholder="Search projects, technologies..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            className={styles.searchInput}
                         />
                     </div>
-                </div>
+                    <Link href="/projects/new" className="btn btn-primary">
+                        + New Project
+                    </Link>
+                </header>
 
-                {loading ? (
-                    <div className={styles.loadingContainer}>
-                        <div className="spinner"></div>
-                    </div>
-                ) : filteredProjects.length === 0 ? (
-                    <div className="empty-state">
-                        <div className="empty-state-icon">📁</div>
-                        <h3>No projects yet</h3>
-                        <p>Add your first project to start preparing for interviews</p>
-                        <Link href="/projects/new" className="btn btn-primary mt-lg">
-                            + Add Your First Project
-                        </Link>
-                    </div>
-                ) : (
-                    <div className={styles.grid}>
-                        {filteredProjects.map((project) => (
-                            <Link
-                                key={project.id}
-                                href={`/projects/${project.id}`}
-                                className={styles.projectCard}
-                            >
-                                <h3 className={styles.projectName}>{project.name}</h3>
-                                <p className={styles.projectDescription}>
-                                    {project.description || 'No description'}
+                {/* Page Content */}
+                <div className={styles.content}>
+                    {/* Welcome Section */}
+                    <section className={styles.welcomeSection}>
+                        <div className={styles.welcomeText}>
+                            <h1 className={styles.welcomeTitle}>
+                                Welcome back, {user.displayName?.split(' ')[0]}!
+                            </h1>
+                            <p className={styles.welcomeSubtitle}>
+                                Here's an overview of your interview preparation progress.
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* Stats Row */}
+                    <section className={styles.statsGrid}>
+                        <div className={styles.statCard}>
+                            <div className={styles.statIcon}>📁</div>
+                            <div className={styles.statContent}>
+                                <span className={styles.statValue}>{projects.length}</span>
+                                <span className={styles.statLabel}>Total Projects</span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <div className={styles.statIcon}>💻</div>
+                            <div className={styles.statContent}>
+                                <span className={styles.statValue}>
+                                    {[...new Set(projects.flatMap(p => p.techStack || []))].length}
+                                </span>
+                                <span className={styles.statLabel}>Technologies</span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <div className={styles.statIcon}>📝</div>
+                            <div className={styles.statContent}>
+                                <span className={styles.statValue}>
+                                    {projects.reduce((sum, p) => sum + (p.snippets?.length || 0), 0)}
+                                </span>
+                                <span className={styles.statLabel}>Code Snippets</span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <div className={styles.statIcon}>🎯</div>
+                            <div className={styles.statContent}>
+                                <span className={styles.statValue}>
+                                    {projects.reduce((sum, p) => sum + (p.questions?.length || 0), 0)}
+                                </span>
+                                <span className={styles.statLabel}>Interview Q's</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Projects Section */}
+                    <section className={styles.projectsSection}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.sectionTitle}>Your Projects</h2>
+                            <span className={styles.projectCount}>
+                                {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
+                            </span>
+                        </div>
+
+                        {loading ? (
+                            <div className={styles.loadingState}>
+                                <div className="spinner"></div>
+                            </div>
+                        ) : filteredProjects.length === 0 ? (
+                            <div className={styles.emptyState}>
+                                <div className={styles.emptyIcon}>📁</div>
+                                <h3 className={styles.emptyTitle}>No projects yet</h3>
+                                <p className={styles.emptyText}>
+                                    Add your first project to start preparing for technical interviews.
                                 </p>
-                                <div className={styles.techStack}>
-                                    {project.techStack.slice(0, 4).map((tech, i) => (
-                                        <span key={i} className="tag tag-primary">
-                                            {tech}
-                                        </span>
-                                    ))}
-                                    {project.techStack.length > 4 && (
-                                        <span className="tag">+{project.techStack.length - 4}</span>
-                                    )}
-                                </div>
-                                <div className={styles.projectMeta}>
-                                    <span>
-                                        Updated {new Date(project.updated_at).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                                <Link href="/projects/new" className="btn btn-primary">
+                                    + Add Your First Project
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className={styles.projectsGrid}>
+                                {filteredProjects.map((project) => (
+                                    <Link
+                                        key={project.id}
+                                        href={`/projects/${project.id}`}
+                                        className={styles.projectCard}
+                                    >
+                                        <div className={styles.cardAccent}></div>
+                                        <div className={styles.cardContent}>
+                                            <h3 className={styles.projectName}>{project.name}</h3>
+                                            <p className={styles.projectDescription}>
+                                                {project.description || 'No description added yet'}
+                                            </p>
+                                            <div className={styles.techStack}>
+                                                {project.techStack.slice(0, 3).map((tech, i) => (
+                                                    <span key={i} className={styles.techTag}>
+                                                        {tech}
+                                                    </span>
+                                                ))}
+                                                {project.techStack.length > 3 && (
+                                                    <span className={styles.techMore}>
+                                                        +{project.techStack.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className={styles.cardFooter}>
+                                                <span className={styles.updateDate}>
+                                                    Updated {new Date(project.updated_at).toLocaleDateString()}
+                                                </span>
+                                                <span className={styles.viewLink}>View →</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                </div>
             </main>
         </div>
     );
