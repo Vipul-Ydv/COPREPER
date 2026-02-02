@@ -226,8 +226,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Name](https://linkedin.com/in/yourname)
+- GitHub: [@VIPUL-YDV](https://github.com/Vipul-YDV)
+- LinkedIn: [VIPUL](https://www.linkedin.com/in/vipulydvv/)
 
 ---
 
