@@ -2,7 +2,13 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '../../data/vault.db');
+const dataDir = path.join(__dirname, '../../data');
+const dbPath = path.join(dataDir, 'vault.db');
+
+// Ensure data directory exists
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
 let db = null;
 
 async function initDatabase() {
