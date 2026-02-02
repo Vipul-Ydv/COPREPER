@@ -1,6 +1,6 @@
 .page {
     min-height: 100vh;
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
 }
 
 .main {
@@ -17,13 +17,19 @@
 }
 
 .title {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
     margin-bottom: var(--spacing-xl);
+    color: var(--coral-primary);
 }
 
 .navLink {
     color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.navLink:hover {
+    color: var(--coral-primary);
 }
 
 .logoutBtn {
@@ -31,21 +37,39 @@
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.logoutBtn:hover {
+    color: var(--error);
 }
 
 .section {
     margin-bottom: var(--spacing-xl);
-    padding: var(--spacing-lg);
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    background: white;
+    border: 1px solid rgba(255, 75, 62, 0.08);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.5s ease-out;
 }
 
 .sectionTitle {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: var(--spacing-md);
-    color: var(--accent-primary);
+    color: var(--coral-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.sectionTitle::before {
+    content: '';
+    width: 4px;
+    height: 1rem;
+    background: var(--gradient-coral);
+    border-radius: 2px;
 }
 
 .profileCard {
@@ -55,21 +79,24 @@
 }
 
 .avatar {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--accent-gradient);
+    background: var(--gradient-coral);
     color: white;
     font-size: 1.5rem;
     font-weight: 700;
     border-radius: 50%;
+    box-shadow: var(--shadow-md);
 }
 
 .displayName {
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.125rem;
     margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
 }
 
 .email {
@@ -91,5 +118,17 @@
 .aboutText {
     color: var(--text-secondary);
     font-size: 0.9rem;
-    line-height: 1.6;
+    line-height: 1.7;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
