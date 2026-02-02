@@ -1,34 +1,14 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
+const { createClient } = require('@libsql/client');
 
-const dataDir = path.join(__dirname, '../../data');
-const dbPath = path.join(dataDir, 'vault.db');
-
-// Ensure data directory exists
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-let db = null;
+// Turso database client
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
 async function initDatabase() {
-  const SQL = await initSqlJs();
-
-  // Load existing database or create new
-  try {
-    if (fs.existsSync(dbPath)) {
-      const buffer = fs.readFileSync(dbPath);
-      db = new SQL.Database(buffer);
-    } else {
-      db = new SQL.Database();
-    }
-  } catch (err) {
-    db = new SQL.Database();
-  }
-
   // Create tables
-  db.run(`
-    -- Users table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -36,11 +16,10 @@ async function initDatabase() {
       display_name TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+    )
   `);
 
-  db.run(`
-    -- Projects table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -59,11 +38,10 @@ async function initDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+    )
   `);
 
-  db.run(`
-    -- Code snippets table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS code_snippets (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
@@ -75,11 +53,10 @@ async function initDatabase() {
       order_index INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-    );
+    )
   `);
 
-  db.run(`
-    -- Interview questions table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS interview_questions (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
@@ -90,11 +67,10 @@ async function initDatabase() {
       is_ai_generated INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-    );
+    )
   `);
 
-  db.run(`
-    -- AI interview sessions table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS ai_interview_sessions (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
@@ -104,11 +80,10 @@ async function initDatabase() {
       feedback TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-    );
+    )
   `);
 
-  db.run(`
-    -- Session responses table
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS session_responses (
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
@@ -120,62 +95,41 @@ async function initDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (session_id) REFERENCES ai_interview_sessions(id) ON DELETE CASCADE,
       FOREIGN KEY (question_id) REFERENCES interview_questions(id) ON DELETE CASCADE
-    );
+    )
   `);
 
   // Create indexes
-  db.run(`CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_snippets_project_id ON code_snippets(project_id);`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_questions_project_id ON interview_questions(project_id);`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_snippets_project_id ON code_snippets(project_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_project_id ON interview_questions(project_id)`);
 
-  saveDatabase();
-  console.log('✅ Database initialized');
+  console.log('✅ Turso database initialized');
 }
 
-function saveDatabase() {
-  if (db) {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(dbPath, buffer);
-  }
-}
-
-// Wrapper functions to match better-sqlite3 API
+// Wrapper functions to match the existing API pattern
 function getDb() {
   return {
     prepare: (sql) => ({
-      run: (...params) => {
-        db.run(sql, params);
-        saveDatabase();
-        return { changes: db.getRowsModified() };
+      run: async (...params) => {
+        const result = await db.execute({ sql, args: params });
+        return { changes: result.rowsAffected };
       },
-      get: (...params) => {
-        const stmt = db.prepare(sql);
-        stmt.bind(params);
-        if (stmt.step()) {
-          const row = stmt.getAsObject();
-          stmt.free();
-          return row;
-        }
-        stmt.free();
-        return undefined;
+      get: async (...params) => {
+        const result = await db.execute({ sql, args: params });
+        return result.rows[0] || undefined;
       },
-      all: (...params) => {
-        const results = [];
-        const stmt = db.prepare(sql);
-        stmt.bind(params);
-        while (stmt.step()) {
-          results.push(stmt.getAsObject());
-        }
-        stmt.free();
-        return results;
+      all: async (...params) => {
+        const result = await db.execute({ sql, args: params });
+        return result.rows;
       }
     }),
-    exec: (sql) => {
-      db.run(sql);
-      saveDatabase();
+    exec: async (sql) => {
+      await db.execute(sql);
     }
   };
 }
+
+// No-op for compatibility (Turso auto-persists)
+function saveDatabase() { }
 
 module.exports = { initDatabase, getDb, saveDatabase };
