@@ -1,12 +1,12 @@
 .page {
     min-height: 100vh;
-    background: var(--bg-secondary);
+    background: var(--bg-base);
 }
 
 .main {
     max-width: 600px;
     margin: 0 auto;
-    padding: var(--spacing-xl);
+    padding: var(--space-8);
 }
 
 .loadingContainer {
@@ -17,27 +17,27 @@
 }
 
 .title {
-    font-size: 2rem;
+    font-size: var(--text-3xl);
     font-weight: 800;
-    margin-bottom: var(--spacing-xl);
-    color: var(--coral-primary);
+    color: var(--text-primary);
+    margin-bottom: var(--space-8);
 }
 
 .navLink {
     color: var(--text-secondary);
-    transition: color var(--transition-fast);
+    transition: color var(--duration-fast);
 }
 
 .navLink:hover {
-    color: var(--coral-primary);
+    color: var(--primary-600);
 }
 
 .logoutBtn {
-    background: none;
+    background: transparent;
     border: none;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     cursor: pointer;
-    transition: color var(--transition-fast);
+    transition: color var(--duration-fast);
 }
 
 .logoutBtn:hover {
@@ -45,80 +45,12 @@
 }
 
 .section {
-    margin-bottom: var(--spacing-xl);
-    padding: var(--spacing-xl);
-    background: white;
-    border: 1px solid rgba(255, 75, 62, 0.08);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-sm);
-    animation: fadeIn 0.5s ease-out;
-}
-
-.sectionTitle {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    color: var(--coral-primary);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.sectionTitle::before {
-    content: '';
-    width: 4px;
-    height: 1rem;
-    background: var(--gradient-coral);
-    border-radius: 2px;
-}
-
-.profileCard {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-}
-
-.avatar {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gradient-coral);
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-radius: 50%;
-    box-shadow: var(--shadow-md);
-}
-
-.displayName {
-    font-weight: 700;
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-primary);
-}
-
-.email {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.joinDate {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    margin-top: var(--spacing-xs);
-}
-
-.accountActions {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.aboutText {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.7;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+    animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes fadeIn {
@@ -131,4 +63,76 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.sectionTitle {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--primary-600);
+    margin-bottom: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.sectionTitle::before {
+    content: '';
+    width: 4px;
+    height: 1rem;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+
+.profileCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+}
+
+.profileInfo {
+    flex: 1;
+}
+
+.displayName {
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.email {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+.joinDate {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    margin-top: var(--space-2);
+}
+
+.accountActions {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+.aboutText {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.7;
 }
