@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import api from '@/lib/api';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
     const { user, loading: authLoading, logout } = useAuth();
+    const { theme, toggleTheme, isDark } = useTheme();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -82,6 +84,10 @@ export default function DashboardPage() {
                 </nav>
 
                 <div className={styles.sidebarFooter}>
+                    <button onClick={toggleTheme} className={styles.themeToggle}>
+                        <span className={styles.themeIcon}>{isDark ? '☀️' : '🌙'}</span>
+                        <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                    </button>
                     <div className={styles.userInfo}>
                         <div className={styles.userAvatar}>
                             {user.displayName?.[0]?.toUpperCase() || 'U'}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import api from '@/lib/api';
 import SnippetManager from '@/components/SnippetManager';
 import styles from './project.module.css';
@@ -11,6 +12,7 @@ import styles from './project.module.css';
 export default function ProjectDetailPage() {
     const { id } = useParams();
     const { user, loading: authLoading, logout } = useAuth();
+    const { toggleTheme, isDark } = useTheme();
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -97,6 +99,10 @@ export default function ProjectDetailPage() {
                 </nav>
 
                 <div className={styles.sidebarFooter}>
+                    <button onClick={toggleTheme} className={styles.themeToggle}>
+                        <span className={styles.themeIcon}>{isDark ? '☀️' : '🌙'}</span>
+                        <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                    </button>
                     <button onClick={logout} className={styles.logoutBtn}>
                         Logout
                     </button>
