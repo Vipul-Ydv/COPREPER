@@ -7,22 +7,22 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // Helper to verify project ownership
-function verifyProjectOwnership(projectId, userId) {
+async function verifyProjectOwnership(projectId, userId) {
     const db = getDb();
-    const project = db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
+    const project = await db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
         .get(projectId, userId);
     return !!project;
 }
 
 // GET /api/questions/:projectId - List questions for a project
-router.get('/:projectId', (req, res, next) => {
+router.get('/:projectId', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const db = getDb();
-        const questions = db.prepare(`
+        const questions = await db.prepare(`
       SELECT * FROM interview_questions 
       WHERE project_id = ? 
       ORDER BY created_at
@@ -35,9 +35,9 @@ router.get('/:projectId', (req, res, next) => {
 });
 
 // POST /api/questions/:projectId - Create question
-router.post('/:projectId', (req, res, next) => {
+router.post('/:projectId', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
@@ -61,7 +61,7 @@ router.post('/:projectId', (req, res, next) => {
         const db = getDb();
         const questionId = uuidv4();
 
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO interview_questions (id, project_id, question, suggested_answer, category, difficulty, is_ai_generated)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(
@@ -74,7 +74,7 @@ router.post('/:projectId', (req, res, next) => {
             isAiGenerated ? 1 : 0
         );
 
-        const created = db.prepare('SELECT * FROM interview_questions WHERE id = ?').get(questionId);
+        const created = await db.prepare('SELECT * FROM interview_questions WHERE id = ?').get(questionId);
         res.status(201).json(created);
     } catch (err) {
         next(err);
@@ -82,16 +82,16 @@ router.post('/:projectId', (req, res, next) => {
 });
 
 // PUT /api/questions/:projectId/:id - Update question
-router.put('/:projectId/:id', (req, res, next) => {
+router.put('/:projectId/:id', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const { question, suggestedAnswer, category, difficulty } = req.body;
         const db = getDb();
 
-        db.prepare(`
+        await db.prepare(`
       UPDATE interview_questions SET
         question = COALESCE(?, question),
         suggested_answer = ?,
@@ -107,7 +107,7 @@ router.put('/:projectId/:id', (req, res, next) => {
             req.params.projectId
         );
 
-        const updated = db.prepare('SELECT * FROM interview_questions WHERE id = ?').get(req.params.id);
+        const updated = await db.prepare('SELECT * FROM interview_questions WHERE id = ?').get(req.params.id);
 
         if (!updated) {
             return res.status(404).json({ error: 'Question not found' });
@@ -120,14 +120,14 @@ router.put('/:projectId/:id', (req, res, next) => {
 });
 
 // DELETE /api/questions/:projectId/:id - Delete question
-router.delete('/:projectId/:id', (req, res, next) => {
+router.delete('/:projectId/:id', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const db = getDb();
-        const result = db.prepare('DELETE FROM interview_questions WHERE id = ? AND project_id = ?')
+        const result = await db.prepare('DELETE FROM interview_questions WHERE id = ? AND project_id = ?')
             .run(req.params.id, req.params.projectId);
 
         if (result.changes === 0) {

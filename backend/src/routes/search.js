@@ -6,7 +6,7 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // GET /api/search?q=keyword - Search across projects and snippets
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const { q } = req.query;
 
@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
     const searchTerm = `%${q.trim()}%`;
 
     // Search projects
-    const projects = db.prepare(`
+    const projects = await db.prepare(`
       SELECT id, name, description, tech_stack, 'project' as type
       FROM projects
       WHERE user_id = ? AND (
@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
     );
 
     // Search snippets (with project info)
-    const snippets = db.prepare(`
+    const snippets = await db.prepare(`
       SELECT 
         s.id,
         s.title,
@@ -59,7 +59,7 @@ router.get('/', (req, res, next) => {
     `).all(req.user.id, searchTerm, searchTerm, searchTerm);
 
     // Search questions
-    const questions = db.prepare(`
+    const questions = await db.prepare(`
       SELECT 
         q.id,
         q.question,

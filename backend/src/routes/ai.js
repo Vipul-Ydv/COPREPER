@@ -8,9 +8,9 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // Helper to verify project ownership
-function verifyProjectOwnership(projectId, userId) {
+async function verifyProjectOwnership(projectId, userId) {
     const db = getDb();
-    const project = db.prepare('SELECT * FROM projects WHERE id = ? AND user_id = ?')
+    const project = await db.prepare('SELECT * FROM projects WHERE id = ? AND user_id = ?')
         .get(projectId, userId);
     return project;
 }
@@ -18,7 +18,7 @@ function verifyProjectOwnership(projectId, userId) {
 // POST /api/ai/generate-questions/:projectId - Generate interview questions
 router.post('/generate-questions/:projectId', async (req, res, next) => {
     try {
-        const project = verifyProjectOwnership(req.params.projectId, req.user.id);
+        const project = await verifyProjectOwnership(req.params.projectId, req.user.id);
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -43,7 +43,7 @@ router.post('/generate-questions/:projectId', async (req, res, next) => {
 // POST /api/ai/evaluate/:projectId - Evaluate an answer
 router.post('/evaluate/:projectId', async (req, res, next) => {
     try {
-        const project = verifyProjectOwnership(req.params.projectId, req.user.id);
+        const project = await verifyProjectOwnership(req.params.projectId, req.user.id);
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -71,7 +71,7 @@ router.post('/evaluate/:projectId', async (req, res, next) => {
 // POST /api/ai/start-session/:projectId - Start an interview session
 router.post('/start-session/:projectId', async (req, res, next) => {
     try {
-        const project = verifyProjectOwnership(req.params.projectId, req.user.id);
+        const project = await verifyProjectOwnership(req.params.projectId, req.user.id);
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -79,7 +79,7 @@ router.post('/start-session/:projectId', async (req, res, next) => {
         const db = getDb();
         const sessionId = uuidv4();
 
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO ai_interview_sessions (id, project_id, started_at)
       VALUES (?, ?, datetime('now'))
     `).run(sessionId, req.params.projectId);
@@ -113,7 +113,7 @@ router.post('/submit-answer/:sessionId', async (req, res, next) => {
         }
 
         // Get session and verify ownership
-        const session = db.prepare(`
+        const session = await db.prepare(`
       SELECT s.*, p.user_id, p.name as project_name, p.tech_stack, p.description,
              p.problem, p.solution, p.architecture, p.challenges
       FROM ai_interview_sessions s
@@ -143,12 +143,12 @@ router.post('/submit-answer/:sessionId', async (req, res, next) => {
         const qId = questionId || uuidv4();
 
         // Create question if not exists
-        db.prepare(`
+        await db.prepare(`
       INSERT OR IGNORE INTO interview_questions (id, project_id, question, category)
       VALUES (?, ?, ?, 'technical')
     `).run(qId, session.project_id, question);
 
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO session_responses (id, session_id, question_id, user_response, ai_feedback, scores, rating)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(
@@ -176,7 +176,7 @@ router.post('/end-session/:sessionId', async (req, res, next) => {
         const db = getDb();
 
         // Get session and verify ownership
-        const session = db.prepare(`
+        const session = await db.prepare(`
       SELECT s.*, p.user_id
       FROM ai_interview_sessions s
       JOIN projects p ON s.project_id = p.id
@@ -188,7 +188,7 @@ router.post('/end-session/:sessionId', async (req, res, next) => {
         }
 
         // Get all responses for this session
-        const responses = db.prepare(`
+        const responses = await db.prepare(`
       SELECT * FROM session_responses WHERE session_id = ?
     `).all(req.params.sessionId);
 
@@ -201,7 +201,7 @@ router.post('/end-session/:sessionId', async (req, res, next) => {
         const summary = await ai.generateSessionSummary(parsedResponses);
 
         // Update session
-        db.prepare(`
+        await db.prepare(`
       UPDATE ai_interview_sessions 
       SET ended_at = datetime('now'), score = ?, feedback = ?
       WHERE id = ?

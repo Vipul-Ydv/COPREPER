@@ -22,7 +22,7 @@ router.post('/signup', async (req, res, next) => {
         }
 
         // Check if user exists
-        const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+        const existingUser = await db.prepare('SELECT id FROM users WHERE email = ?').get(email);
         if (existingUser) {
             return res.status(400).json({ error: 'Email already registered' });
         }
@@ -32,13 +32,13 @@ router.post('/signup', async (req, res, next) => {
 
         // Create user
         const userId = uuidv4();
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO users (id, email, password_hash, display_name)
       VALUES (?, ?, ?, ?)
     `).run(userId, email, passwordHash, displayName);
 
         // Get created user
-        const user = db.prepare('SELECT id, email, display_name, created_at FROM users WHERE id = ?').get(userId);
+        const user = await db.prepare('SELECT id, email, display_name, created_at FROM users WHERE id = ?').get(userId);
 
         // Generate token
         const token = generateToken(user);
@@ -70,7 +70,7 @@ router.post('/login', async (req, res, next) => {
         }
 
         // Find user
-        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+        const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email);
         if (!user) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
@@ -100,9 +100,9 @@ router.post('/login', async (req, res, next) => {
 });
 
 // GET /api/auth/me - Get current user
-router.get('/me', require('../middleware/auth').authenticateToken, (req, res) => {
+router.get('/me', require('../middleware/auth').authenticateToken, async (req, res) => {
     const db = getDb();
-    const user = db.prepare('SELECT id, email, display_name, created_at FROM users WHERE id = ?').get(req.user.id);
+    const user = await db.prepare('SELECT id, email, display_name, created_at FROM users WHERE id = ?').get(req.user.id);
 
     if (!user) {
         return res.status(404).json({ error: 'User not found' });

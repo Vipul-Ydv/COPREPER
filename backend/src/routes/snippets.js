@@ -7,22 +7,22 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // Helper to verify project ownership
-function verifyProjectOwnership(projectId, userId) {
+async function verifyProjectOwnership(projectId, userId) {
     const db = getDb();
-    const project = db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
+    const project = await db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
         .get(projectId, userId);
     return !!project;
 }
 
 // GET /api/snippets/:projectId - List snippets for a project
-router.get('/:projectId', (req, res, next) => {
+router.get('/:projectId', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const db = getDb();
-        const snippets = db.prepare(`
+        const snippets = await db.prepare(`
       SELECT * FROM code_snippets 
       WHERE project_id = ? 
       ORDER BY order_index
@@ -35,9 +35,9 @@ router.get('/:projectId', (req, res, next) => {
 });
 
 // POST /api/snippets/:projectId - Create snippet
-router.post('/:projectId', (req, res, next) => {
+router.post('/:projectId', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
@@ -50,13 +50,13 @@ router.post('/:projectId', (req, res, next) => {
         const db = getDb();
 
         // Get max order_index
-        const maxOrder = db.prepare(`
+        const maxOrder = await db.prepare(`
       SELECT MAX(order_index) as max FROM code_snippets WHERE project_id = ?
     `).get(req.params.projectId);
 
         const snippetId = uuidv4();
 
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO code_snippets (id, project_id, title, code, language, explanation, interview_tip, order_index)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
@@ -70,7 +70,7 @@ router.post('/:projectId', (req, res, next) => {
             (maxOrder?.max || 0) + 1
         );
 
-        const snippet = db.prepare('SELECT * FROM code_snippets WHERE id = ?').get(snippetId);
+        const snippet = await db.prepare('SELECT * FROM code_snippets WHERE id = ?').get(snippetId);
         res.status(201).json(snippet);
     } catch (err) {
         next(err);
@@ -78,16 +78,16 @@ router.post('/:projectId', (req, res, next) => {
 });
 
 // PUT /api/snippets/:projectId/:id - Update snippet
-router.put('/:projectId/:id', (req, res, next) => {
+router.put('/:projectId/:id', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const { title, code, language, explanation, interviewTip, orderIndex } = req.body;
         const db = getDb();
 
-        db.prepare(`
+        await db.prepare(`
       UPDATE code_snippets SET
         title = COALESCE(?, title),
         code = COALESCE(?, code),
@@ -107,7 +107,7 @@ router.put('/:projectId/:id', (req, res, next) => {
             req.params.projectId
         );
 
-        const snippet = db.prepare('SELECT * FROM code_snippets WHERE id = ?').get(req.params.id);
+        const snippet = await db.prepare('SELECT * FROM code_snippets WHERE id = ?').get(req.params.id);
 
         if (!snippet) {
             return res.status(404).json({ error: 'Snippet not found' });
@@ -120,14 +120,14 @@ router.put('/:projectId/:id', (req, res, next) => {
 });
 
 // DELETE /api/snippets/:projectId/:id - Delete snippet
-router.delete('/:projectId/:id', (req, res, next) => {
+router.delete('/:projectId/:id', async (req, res, next) => {
     try {
-        if (!verifyProjectOwnership(req.params.projectId, req.user.id)) {
+        if (!await verifyProjectOwnership(req.params.projectId, req.user.id)) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
         const db = getDb();
-        const result = db.prepare('DELETE FROM code_snippets WHERE id = ? AND project_id = ?')
+        const result = await db.prepare('DELETE FROM code_snippets WHERE id = ? AND project_id = ?')
             .run(req.params.id, req.params.projectId);
 
         if (result.changes === 0) {

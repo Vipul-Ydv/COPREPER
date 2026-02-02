@@ -9,10 +9,10 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // GET /api/projects - List all projects for user
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
     try {
         const db = getDb();
-        const projects = db.prepare(`
+        const projects = await db.prepare(`
       SELECT id, name, description, tech_stack, github_url, live_url, created_at, updated_at
       FROM projects
       WHERE user_id = ?
@@ -32,10 +32,10 @@ router.get('/', (req, res, next) => {
 });
 
 // GET /api/projects/:id - Get single project with all details
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
         const db = getDb();
-        const project = db.prepare(`
+        const project = await db.prepare(`
       SELECT * FROM projects WHERE id = ? AND user_id = ?
     `).get(req.params.id, req.user.id);
 
@@ -44,12 +44,12 @@ router.get('/:id', (req, res, next) => {
         }
 
         // Get snippets
-        const snippets = db.prepare(`
+        const snippets = await db.prepare(`
       SELECT * FROM code_snippets WHERE project_id = ? ORDER BY order_index
     `).all(req.params.id);
 
         // Get questions
-        const questions = db.prepare(`
+        const questions = await db.prepare(`
       SELECT * FROM interview_questions WHERE project_id = ? ORDER BY created_at
     `).all(req.params.id);
 
@@ -65,7 +65,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // POST /api/projects - Create new project
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
     try {
         const db = getDb();
         const {
@@ -89,7 +89,7 @@ router.post('/', (req, res, next) => {
 
         const projectId = uuidv4();
 
-        db.prepare(`
+        await db.prepare(`
       INSERT INTO projects (
         id, user_id, name, description, problem, solution, tech_stack,
         github_url, live_url, architecture, tradeoffs, challenges,
@@ -112,7 +112,7 @@ router.post('/', (req, res, next) => {
             interviewNotes || null
         );
 
-        const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(projectId);
+        const project = await db.prepare('SELECT * FROM projects WHERE id = ?').get(projectId);
 
         res.status(201).json({
             ...project,
@@ -124,12 +124,12 @@ router.post('/', (req, res, next) => {
 });
 
 // PUT /api/projects/:id - Update project
-router.put('/:id', (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
     try {
         const db = getDb();
 
         // Check ownership
-        const existing = db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
+        const existing = await db.prepare('SELECT id FROM projects WHERE id = ? AND user_id = ?')
             .get(req.params.id, req.user.id);
 
         if (!existing) {
@@ -151,7 +151,7 @@ router.put('/:id', (req, res, next) => {
             interviewNotes
         } = req.body;
 
-        db.prepare(`
+        await db.prepare(`
       UPDATE projects SET
         name = COALESCE(?, name),
         description = ?,
@@ -183,7 +183,7 @@ router.put('/:id', (req, res, next) => {
             req.params.id
         );
 
-        const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
+        const project = await db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
 
         res.json({
             ...project,
@@ -195,10 +195,10 @@ router.put('/:id', (req, res, next) => {
 });
 
 // DELETE /api/projects/:id - Delete project
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         const db = getDb();
-        const result = db.prepare('DELETE FROM projects WHERE id = ? AND user_id = ?')
+        const result = await db.prepare('DELETE FROM projects WHERE id = ? AND user_id = ?')
             .run(req.params.id, req.user.id);
 
         if (result.changes === 0) {
