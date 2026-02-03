@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { Icons } from '@/components/Icons';
 import api from '@/lib/api';
 import SnippetManager from '@/components/SnippetManager';
 import styles from './project.module.css';
@@ -78,33 +79,35 @@ export default function ProjectDetailPage() {
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
                     <Link href="/dashboard" className={styles.logo}>
-                        <span className={styles.logoIcon}>🎯</span>
+                        <span className={styles.logoIcon}><Icons.Logo size={24} /></span>
                         <span className={styles.logoText}>COPREPER</span>
                     </Link>
                 </div>
 
                 <nav className={styles.sidebarNav}>
                     <Link href="/dashboard" className={styles.navItem}>
-                        <span className={styles.navIcon}>📊</span>
+                        <span className={styles.navIcon}><Icons.Dashboard size={18} /></span>
                         Dashboard
                     </Link>
                     <Link href="/projects/new" className={styles.navItem}>
-                        <span className={styles.navIcon}>➕</span>
+                        <span className={styles.navIcon}><Icons.Plus size={18} /></span>
                         New Project
                     </Link>
                     <Link href="/settings" className={styles.navItem}>
-                        <span className={styles.navIcon}>⚙️</span>
+                        <span className={styles.navIcon}><Icons.Settings size={18} /></span>
                         Settings
                     </Link>
                 </nav>
 
                 <div className={styles.sidebarFooter}>
                     <button onClick={toggleTheme} className={styles.themeToggle}>
-                        <span className={styles.themeIcon}>{isDark ? '☀️' : '🌙'}</span>
+                        <span className={styles.themeIcon}>
+                            {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
+                        </span>
                         <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
                     </button>
                     <button onClick={logout} className={styles.logoutBtn}>
-                        Logout
+                        <Icons.Logout size={16} /> Logout
                     </button>
                 </div>
             </aside>
@@ -113,11 +116,11 @@ export default function ProjectDetailPage() {
             <main className={styles.main}>
                 <div className={styles.header}>
                     <Link href="/dashboard" className={styles.backLink}>
-                        ← Back to Dashboard
+                        <Icons.ArrowLeft size={16} /> Back to Dashboard
                     </Link>
                     <div className={styles.actions}>
                         <Link href={`/projects/${id}/prep`} className="btn btn-success">
-                            🎯 Practice Interview
+                            <Icons.Target size={16} /> Practice Interview
                         </Link>
                         <Link href={`/projects/${id}/edit`} className="btn btn-secondary">
                             Edit
@@ -145,7 +148,7 @@ export default function ProjectDetailPage() {
                                 rel="noopener noreferrer"
                                 className={styles.externalLink}
                             >
-                                🔗 GitHub
+                                <Icons.ExternalLink size={14} /> GitHub
                             </a>
                         )}
                         {project.live_url && (
@@ -155,7 +158,7 @@ export default function ProjectDetailPage() {
                                 rel="noopener noreferrer"
                                 className={styles.externalLink}
                             >
-                                🌐 Live Demo
+                                <Icons.ExternalLink size={14} /> Live Demo
                             </a>
                         )}
                     </div>

@@ -43,7 +43,10 @@
 }
 
 .logoIcon {
-    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600);
 }
 
 .logoText {
@@ -83,7 +86,10 @@
 }
 
 .navIcon {
-    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
 }
 
 .sidebarFooter {
@@ -107,6 +113,10 @@
     background: var(--error-light);
     border-color: var(--error);
     color: var(--error);
+}
+
+.logoutBtn svg {
+    margin-right: var(--space-2);
 }
 
 .themeToggle {
@@ -133,7 +143,9 @@
 }
 
 .themeIcon {
-    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ===== MAIN CONTENT ===== */

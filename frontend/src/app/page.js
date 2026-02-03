@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { Icons } from '@/components/Icons';
 import styles from './landing.module.css';
 
 export default function Home() {
@@ -31,12 +32,12 @@ export default function Home() {
       {/* Navigation */}
       <nav className={styles.nav}>
         <Link href="/" className={styles.logo}>
-          <span className={styles.logoIcon}>🎯</span>
+          <span className={styles.logoIcon}><Icons.Logo size={28} /></span>
           <span className={styles.logoText}>COPREPER</span>
         </Link>
         <div className={styles.navActions}>
-          <button onClick={toggleTheme} className={styles.themeBtn}>
-            {isDark ? '☀️' : '🌙'}
+          <button onClick={toggleTheme} className={styles.themeBtn} aria-label="Toggle theme">
+            {isDark ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
           </button>
           <Link href="/login" className={styles.loginBtn}>
             Sign In
@@ -55,7 +56,10 @@ export default function Home() {
           <div className={styles.gradientOrb3}></div>
         </div>
         <div className={styles.heroContent}>
-          <span className={styles.badge}>🚀 Interview Prep Made Simple</span>
+          <span className={styles.badge}>
+            <Icons.Rocket size={14} />
+            Interview Prep Made Simple
+          </span>
           <h1 className={styles.heroTitle}>
             Never Forget Your
             <span className={styles.gradient}> Project Details </span>
@@ -68,7 +72,7 @@ export default function Home() {
           <div className={styles.heroCtas}>
             <Link href="/login" className={styles.primaryCta}>
               Start Preparing Free
-              <span className={styles.ctaArrow}>→</span>
+              <Icons.ArrowRight size={18} />
             </Link>
             <a href="#features" className={styles.secondaryCta}>
               See How It Works
@@ -86,7 +90,7 @@ export default function Home() {
             </div>
             <div className={styles.statDivider}></div>
             <div className={styles.stat}>
-              <span className={styles.statValue}>∞</span>
+              <span className={styles.statValue}><Icons.Infinity size={24} /></span>
               <span className={styles.statLabel}>Projects</span>
             </div>
           </div>
@@ -104,42 +108,42 @@ export default function Home() {
         </div>
         <div className={styles.featureGrid}>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>📁</div>
+            <div className={styles.featureIcon}><Icons.Folder size={32} /></div>
             <h3 className={styles.featureTitle}>Project Documentation</h3>
             <p className={styles.featureDesc}>
               Store comprehensive details about each project—architecture, challenges, tradeoffs, and more.
             </p>
           </div>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>🤖</div>
+            <div className={styles.featureIcon}><Icons.Sparkles size={32} /></div>
             <h3 className={styles.featureTitle}>AI-Powered Questions</h3>
             <p className={styles.featureDesc}>
               Get interview questions auto-generated based on your project details and tech stack.
             </p>
           </div>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>💻</div>
+            <div className={styles.featureIcon}><Icons.Code size={32} /></div>
             <h3 className={styles.featureTitle}>Code Snippets</h3>
             <p className={styles.featureDesc}>
               Save key code snippets with explanations to discuss your technical decisions confidently.
             </p>
           </div>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>🎯</div>
+            <div className={styles.featureIcon}><Icons.Target size={32} /></div>
             <h3 className={styles.featureTitle}>Mock Interview Mode</h3>
             <p className={styles.featureDesc}>
               Practice answering questions with AI evaluation and get instant feedback on your responses.
             </p>
           </div>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>🌙</div>
+            <div className={styles.featureIcon}><Icons.Moon size={32} /></div>
             <h3 className={styles.featureTitle}>Dark Mode</h3>
             <p className={styles.featureDesc}>
               Easy on the eyes with a beautiful dark theme. Perfect for late-night prep sessions.
             </p>
           </div>
           <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>☁️</div>
+            <div className={styles.featureIcon}><Icons.Cloud size={32} /></div>
             <h3 className={styles.featureTitle}>Cloud Synced</h3>
             <p className={styles.featureDesc}>
               Access your projects from anywhere. Your data is securely stored and always available.
@@ -198,11 +202,11 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerBrand}>
-            <span className={styles.logoIcon}>🎯</span>
+            <Icons.Logo size={24} />
             <span className={styles.logoText}>COPREPER</span>
           </div>
           <p className={styles.footerText}>
-            Built with ❤️ for developers, by developers.
+            Built with <Icons.Heart size={14} className={styles.heartIcon} /> for developers, by developers.
           </p>
           <p className={styles.footerCopy}>
             © {new Date().getFullYear()} COPREPER. All rights reserved.

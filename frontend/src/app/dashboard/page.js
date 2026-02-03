@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { Icons } from '@/components/Icons';
 import api from '@/lib/api';
 import styles from './dashboard.module.css';
 
@@ -63,29 +64,31 @@ export default function DashboardPage() {
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
                     <Link href="/dashboard" className={styles.logo}>
-                        <span className={styles.logoIcon}>🎯</span>
+                        <span className={styles.logoIcon}><Icons.Logo size={24} /></span>
                         <span className={styles.logoText}>COPREPER</span>
                     </Link>
                 </div>
 
                 <nav className={styles.sidebarNav}>
                     <Link href="/dashboard" className={`${styles.navItem} ${styles.active}`}>
-                        <span className={styles.navIcon}>📊</span>
+                        <span className={styles.navIcon}><Icons.Dashboard size={18} /></span>
                         Dashboard
                     </Link>
                     <Link href="/projects/new" className={styles.navItem}>
-                        <span className={styles.navIcon}>➕</span>
+                        <span className={styles.navIcon}><Icons.Plus size={18} /></span>
                         New Project
                     </Link>
                     <Link href="/settings" className={styles.navItem}>
-                        <span className={styles.navIcon}>⚙️</span>
+                        <span className={styles.navIcon}><Icons.Settings size={18} /></span>
                         Settings
                     </Link>
                 </nav>
 
                 <div className={styles.sidebarFooter}>
                     <button onClick={toggleTheme} className={styles.themeToggle}>
-                        <span className={styles.themeIcon}>{isDark ? '☀️' : '🌙'}</span>
+                        <span className={styles.themeIcon}>
+                            {isDark ? <Icons.Sun size={16} /> : <Icons.Moon size={16} />}
+                        </span>
                         <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
                     </button>
                     <div className={styles.userInfo}>
@@ -98,6 +101,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <button onClick={logout} className={styles.logoutBtn}>
+                        <Icons.Logout size={16} />
                         Logout
                     </button>
                 </div>
@@ -108,7 +112,7 @@ export default function DashboardPage() {
                 {/* Top Bar */}
                 <header className={styles.topBar}>
                     <div className={styles.searchBox}>
-                        <span className={styles.searchIcon}>🔍</span>
+                        <span className={styles.searchIcon}><Icons.Search size={16} /></span>
                         <input
                             type="text"
                             placeholder="Search projects, technologies..."
@@ -118,7 +122,7 @@ export default function DashboardPage() {
                         />
                     </div>
                     <Link href="/projects/new" className="btn btn-primary">
-                        + New Project
+                        <Icons.Plus size={16} /> New Project
                     </Link>
                 </header>
 
@@ -139,14 +143,14 @@ export default function DashboardPage() {
                     {/* Stats Row */}
                     <section className={styles.statsGrid}>
                         <div className={styles.statCard}>
-                            <div className={styles.statIcon}>📁</div>
+                            <div className={styles.statIcon}><Icons.Folder size={22} /></div>
                             <div className={styles.statContent}>
                                 <span className={styles.statValue}>{projects.length}</span>
                                 <span className={styles.statLabel}>Total Projects</span>
                             </div>
                         </div>
                         <div className={styles.statCard}>
-                            <div className={styles.statIcon}>💻</div>
+                            <div className={styles.statIcon}><Icons.Code size={22} /></div>
                             <div className={styles.statContent}>
                                 <span className={styles.statValue}>
                                     {[...new Set(projects.flatMap(p => p.techStack || []))].length}
@@ -155,7 +159,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className={styles.statCard}>
-                            <div className={styles.statIcon}>📝</div>
+                            <div className={styles.statIcon}><Icons.Document size={22} /></div>
                             <div className={styles.statContent}>
                                 <span className={styles.statValue}>
                                     {projects.reduce((sum, p) => sum + (p.snippets?.length || 0), 0)}
@@ -164,7 +168,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className={styles.statCard}>
-                            <div className={styles.statIcon}>🎯</div>
+                            <div className={styles.statIcon}><Icons.Target size={22} /></div>
                             <div className={styles.statContent}>
                                 <span className={styles.statValue}>
                                     {projects.reduce((sum, p) => sum + (p.questions?.length || 0), 0)}
@@ -189,13 +193,13 @@ export default function DashboardPage() {
                             </div>
                         ) : filteredProjects.length === 0 ? (
                             <div className={styles.emptyState}>
-                                <div className={styles.emptyIcon}>📁</div>
+                                <div className={styles.emptyIcon}><Icons.Folder size={48} /></div>
                                 <h3 className={styles.emptyTitle}>No projects yet</h3>
                                 <p className={styles.emptyText}>
                                     Add your first project to start preparing for technical interviews.
                                 </p>
                                 <Link href="/projects/new" className="btn btn-primary">
-                                    + Add Your First Project
+                                    <Icons.Plus size={16} /> Add Your First Project
                                 </Link>
                             </div>
                         ) : (
@@ -228,7 +232,9 @@ export default function DashboardPage() {
                                                 <span className={styles.updateDate}>
                                                     Updated {new Date(project.updated_at).toLocaleDateString()}
                                                 </span>
-                                                <span className={styles.viewLink}>View →</span>
+                                                <span className={styles.viewLink}>
+                                                    View <Icons.ArrowRight size={14} />
+                                                </span>
                                             </div>
                                         </div>
                                     </Link>

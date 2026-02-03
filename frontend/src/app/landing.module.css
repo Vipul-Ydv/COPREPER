@@ -35,7 +35,10 @@
 }
 
 .logoIcon {
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600);
 }
 
 .logoText {
@@ -180,7 +183,9 @@
 }
 
 .badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
     background: var(--primary-50);
     color: var(--primary-600);
@@ -374,8 +379,15 @@
 }
 
 .featureIcon {
-    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
     margin-bottom: var(--space-4);
+    color: var(--primary-600);
+    background: var(--primary-50);
+    border-radius: var(--radius-xl);
 }
 
 .featureTitle {
@@ -388,6 +400,12 @@
 .featureDesc {
     color: var(--text-secondary);
     line-height: 1.7;
+}
+
+.heartIcon {
+    display: inline-block;
+    vertical-align: middle;
+    color: var(--error);
 }
 
 /* ===== HOW IT WORKS ===== */
