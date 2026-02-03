@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Icons } from '@/components/Icons';
+import AppMockup from '@/components/AppMockup';
 import styles from './landing.module.css';
 
 export default function Home() {
@@ -95,6 +96,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* App Preview Mockup */}
+        <AppMockup />
       </section>
 
       {/* Features Section */}
