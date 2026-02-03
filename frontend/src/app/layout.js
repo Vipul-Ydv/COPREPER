@@ -1,6 +1,7 @@
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { ToastProvider } from '@/context/ToastContext';
 
 export const metadata = {
   title: 'COPREPER - Interview Prep Knowledge Base',
@@ -20,9 +21,11 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ThemeProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <ToastProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

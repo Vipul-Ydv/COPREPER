@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useToast } from '@/context/ToastContext';
 import { Icons } from '@/components/Icons';
 import api from '@/lib/api';
 import SnippetManager from '@/components/SnippetManager';
@@ -14,6 +15,7 @@ export default function ProjectDetailPage() {
     const { id } = useParams();
     const { user, loading: authLoading, logout } = useAuth();
     const { toggleTheme, isDark } = useTheme();
+    const { success, error: showError } = useToast();
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -37,6 +39,7 @@ export default function ProjectDetailPage() {
             setProject(data);
         } catch (err) {
             setError(err.message);
+            showError('Failed to load project.');
         } finally {
             setLoading(false);
         }
@@ -46,9 +49,11 @@ export default function ProjectDetailPage() {
         if (!confirm('Are you sure you want to delete this project?')) return;
         try {
             await api.deleteProject(id);
+            success('Project deleted successfully!');
             router.push('/dashboard');
         } catch (err) {
             setError(err.message);
+            showError('Failed to delete project. Please try again.');
         }
     }
 

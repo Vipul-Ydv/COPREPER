@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useToast } from '@/context/ToastContext';
 import { Icons } from '@/components/Icons';
 import api from '@/lib/api';
 import styles from './dashboard.module.css';
@@ -12,6 +13,7 @@ import styles from './dashboard.module.css';
 export default function DashboardPage() {
     const { user, loading: authLoading, logout } = useAuth();
     const { theme, toggleTheme, isDark } = useTheme();
+    const { success, error: showError } = useToast();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +37,7 @@ export default function DashboardPage() {
             setProjects(data);
         } catch (error) {
             console.error('Failed to load projects:', error);
+            showError('Failed to load projects. Please try again.');
         } finally {
             setLoading(false);
         }
