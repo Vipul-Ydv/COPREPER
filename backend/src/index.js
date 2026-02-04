@@ -58,6 +58,7 @@ async function start() {
   const questionRoutes = require('./routes/questions');
   const searchRoutes = require('./routes/search');
   const aiRoutes = require('./routes/ai');
+  const tagRoutes = require('./routes/tags');
 
   // Routes
   app.use('/api/auth', authRoutes);
@@ -66,6 +67,7 @@ async function start() {
   app.use('/api/questions', questionRoutes);
   app.use('/api/search', searchRoutes);
   app.use('/api/ai', aiRoutes);
+  app.use('/api/tags', tagRoutes);
 
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);

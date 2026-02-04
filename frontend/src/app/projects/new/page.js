@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
+import TagInput from '@/components/TagInput';
 import styles from './new.module.css';
 
 export default function NewProjectPage() {
@@ -27,6 +28,7 @@ export default function NewProjectPage() {
         improvements: '',
         interviewNotes: '',
     });
+    const [selectedTags, setSelectedTags] = useState([]);
 
     if (authLoading) {
         return (
@@ -58,6 +60,7 @@ export default function NewProjectPage() {
                     .split(',')
                     .map((t) => t.trim())
                     .filter(Boolean),
+                tagIds: selectedTags.map(t => t.id),
             };
             const project = await api.createProject(data);
             router.push(`/projects/${project.id}`);
@@ -128,6 +131,15 @@ export default function NewProjectPage() {
                                 placeholder="React, Node.js, PostgreSQL, Redis"
                                 value={formData.techStack}
                                 onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className={styles.field}>
+                            <label className="label">Tags</label>
+                            <TagInput
+                                selectedTags={selectedTags}
+                                onChange={setSelectedTags}
+                                placeholder="Add tags like 'Frontend', 'Interview Ready'..."
                             />
                         </div>
 

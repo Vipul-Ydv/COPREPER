@@ -98,10 +98,37 @@ async function initDatabase() {
     )
   `);
 
+  // Tags table for organizing projects
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS tags (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      color TEXT DEFAULT '#8b5cf6',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, name),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Junction table for project-tag relationships
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS project_tags (
+      project_id TEXT NOT NULL,
+      tag_id TEXT NOT NULL,
+      PRIMARY KEY (project_id, tag_id),
+      FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+      FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+    )
+  `);
+
   // Create indexes
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_snippets_project_id ON code_snippets(project_id)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_project_id ON interview_questions(project_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_tags_user_id ON tags(user_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_project_tags_project ON project_tags(project_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_project_tags_tag ON project_tags(tag_id)`);
 
   console.log('✅ Turso database initialized');
 }

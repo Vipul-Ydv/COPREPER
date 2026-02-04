@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
+import TagInput from '@/components/TagInput';
 import styles from '../../new/new.module.css';
 
 export default function EditProjectPage() {
@@ -29,6 +30,7 @@ export default function EditProjectPage() {
         improvements: '',
         interviewNotes: '',
     });
+    const [selectedTags, setSelectedTags] = useState([]);
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -59,6 +61,7 @@ export default function EditProjectPage() {
                 improvements: project.improvements || '',
                 interviewNotes: project.interview_notes || '',
             });
+            setSelectedTags(project.tags || []);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -83,6 +86,7 @@ export default function EditProjectPage() {
                     .split(',')
                     .map((t) => t.trim())
                     .filter(Boolean),
+                tagIds: selectedTags.map(t => t.id),
             };
             await api.updateProject(id, data);
             router.push(`/projects/${id}`);
@@ -158,6 +162,15 @@ export default function EditProjectPage() {
                                 className="input"
                                 value={formData.techStack}
                                 onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className={styles.field}>
+                            <label className="label">Tags</label>
+                            <TagInput
+                                selectedTags={selectedTags}
+                                onChange={setSelectedTags}
+                                placeholder="Add tags like 'Frontend', 'Interview Ready'..."
                             />
                         </div>
 

@@ -15,6 +15,8 @@ export default function DashboardPage() {
     const { theme, toggleTheme, isDark } = useTheme();
     const { success, error: showError } = useToast();
     const [projects, setProjects] = useState([]);
+    const [tags, setTags] = useState([]);
+    const [selectedTagId, setSelectedTagId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
@@ -28,18 +30,36 @@ export default function DashboardPage() {
     useEffect(() => {
         if (user) {
             loadProjects();
+            loadTags();
         }
     }, [user]);
 
-    async function loadProjects() {
+    useEffect(() => {
+        if (user) {
+            loadProjects(selectedTagId);
+        }
+    }, [selectedTagId]);
+
+    async function loadProjects(tagId = null) {
         try {
-            const data = await api.getProjects();
+            setLoading(true);
+            const url = tagId ? `/projects?tag=${tagId}` : '/projects';
+            const data = await api.getProjects(tagId);
             setProjects(data);
         } catch (error) {
             console.error('Failed to load projects:', error);
             showError('Failed to load projects. Please try again.');
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function loadTags() {
+        try {
+            const data = await api.getTags();
+            setTags(data);
+        } catch (error) {
+            console.error('Failed to load tags:', error);
         }
     }
 
@@ -190,6 +210,33 @@ export default function DashboardPage() {
                             </span>
                         </div>
 
+                        {/* Tag Filter Bar */}
+                        {tags.length > 0 && (
+                            <div className={styles.tagFilterBar}>
+                                <button
+                                    onClick={() => setSelectedTagId(null)}
+                                    className={`${styles.tagFilterChip} ${!selectedTagId ? styles.tagFilterActive : ''}`}
+                                >
+                                    All
+                                </button>
+                                {tags.map(tag => (
+                                    <button
+                                        key={tag.id}
+                                        onClick={() => setSelectedTagId(tag.id)}
+                                        className={`${styles.tagFilterChip} ${selectedTagId === tag.id ? styles.tagFilterActive : ''}`}
+                                        style={{
+                                            '--tag-color': tag.color,
+                                            borderColor: selectedTagId === tag.id ? tag.color : undefined,
+                                            backgroundColor: selectedTagId === tag.id ? tag.color + '15' : undefined
+                                        }}
+                                    >
+                                        <span className={styles.tagDot} style={{ backgroundColor: tag.color }} />
+                                        {tag.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
                         {loading ? (
                             <div className={styles.loadingState}>
                                 <div className="spinner"></div>
@@ -197,13 +244,19 @@ export default function DashboardPage() {
                         ) : filteredProjects.length === 0 ? (
                             <div className={styles.emptyState}>
                                 <div className={styles.emptyIcon}><Icons.Folder size={48} /></div>
-                                <h3 className={styles.emptyTitle}>No projects yet</h3>
+                                <h3 className={styles.emptyTitle}>
+                                    {selectedTagId ? 'No projects with this tag' : 'No projects yet'}
+                                </h3>
                                 <p className={styles.emptyText}>
-                                    Add your first project to start preparing for technical interviews.
+                                    {selectedTagId
+                                        ? 'Try selecting a different tag or add tags to your projects.'
+                                        : 'Add your first project to start preparing for technical interviews.'}
                                 </p>
-                                <Link href="/projects/new" className="btn btn-primary">
-                                    <Icons.Plus size={16} /> Add Your First Project
-                                </Link>
+                                {!selectedTagId && (
+                                    <Link href="/projects/new" className="btn btn-primary">
+                                        <Icons.Plus size={16} /> Add Your First Project
+                                    </Link>
+                                )}
                             </div>
                         ) : (
                             <div className={styles.projectsGrid}>
@@ -219,6 +272,31 @@ export default function DashboardPage() {
                                             <p className={styles.projectDescription}>
                                                 {project.description || 'No description added yet'}
                                             </p>
+
+                                            {/* Project Tags */}
+                                            {project.tags && project.tags.length > 0 && (
+                                                <div className={styles.projectTags}>
+                                                    {project.tags.slice(0, 3).map(tag => (
+                                                        <span
+                                                            key={tag.id}
+                                                            className={styles.projectTag}
+                                                            style={{
+                                                                backgroundColor: tag.color + '20',
+                                                                color: tag.color,
+                                                                borderColor: tag.color
+                                                            }}
+                                                        >
+                                                            {tag.name}
+                                                        </span>
+                                                    ))}
+                                                    {project.tags.length > 3 && (
+                                                        <span className={styles.tagMore}>
+                                                            +{project.tags.length - 3}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+
                                             <div className={styles.techStack}>
                                                 {project.techStack.slice(0, 3).map((tech, i) => (
                                                     <span key={i} className={styles.techTag}>

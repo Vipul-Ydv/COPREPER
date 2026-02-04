@@ -138,6 +138,27 @@ export default function ProjectDetailPage() {
 
                 <div className={styles.hero}>
                     <h1 className={styles.title}>{project.name}</h1>
+
+                    {/* Project Tags */}
+                    {project.tags && project.tags.length > 0 && (
+                        <div className={styles.projectTags}>
+                            {project.tags.map(tag => (
+                                <span
+                                    key={tag.id}
+                                    className={styles.projectTag}
+                                    style={{
+                                        backgroundColor: tag.color + '20',
+                                        color: tag.color,
+                                        borderColor: tag.color
+                                    }}
+                                >
+                                    <Icons.Tag size={12} />
+                                    {tag.name}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
                     <div className={styles.techStack}>
                         {techStack.map((tech, i) => (
                             <span key={i} className="tag tag-primary">

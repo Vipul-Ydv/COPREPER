@@ -72,8 +72,9 @@ class ApiClient {
     }
 
     // Projects
-    async getProjects() {
-        return this.request('/projects');
+    async getProjects(tagId = null) {
+        const url = tagId ? `/projects?tag=${tagId}` : '/projects';
+        return this.request(url);
     }
 
     async getProject(id) {
@@ -186,6 +187,31 @@ class ApiClient {
         return this.request(`/ai/evaluate/${projectId}`, {
             method: 'POST',
             body: JSON.stringify({ question, answer }),
+        });
+    }
+
+    // Tags
+    async getTags() {
+        return this.request('/tags');
+    }
+
+    async createTag(data) {
+        return this.request('/tags', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async updateTag(id, data) {
+        return this.request(`/tags/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async deleteTag(id) {
+        return this.request(`/tags/${id}`, {
+            method: 'DELETE',
         });
     }
 }
