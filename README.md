@@ -1,6 +1,6 @@
 # 🎯 COPREPER
 
-> **A personal knowledge base for CS students to store, organize, and revise their software projects before technical interviews.**
+> **A personal knowledge base for CS students to store, organize, and revise their software projects before technical interview.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)](https://nodejs.org/)
