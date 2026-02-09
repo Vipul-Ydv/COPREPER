@@ -36,7 +36,7 @@ COPREPER is a structured interview prep tool that transforms scattered project m
 ## ✨ Features
 
 ### Core Features
-- **📁 Project Management** — Store unlimited projects with structured fields
+- **📁 Project Management** — Store unlimited projects with structured field
 - **💻 Code Snippets** — Syntax-highlighted code with "why this matters" explanations
 - **⚖️ Tradeoff Documentation** — Record decisions in "Chose X over Y" format
 - **🔍 Instant Search** — Find any project or snippet in milliseconds
