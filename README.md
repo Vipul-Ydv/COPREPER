@@ -70,7 +70,7 @@ COPREPER is a structured interview prep tool that transforms scattered project m
 ```
 
 **Key Design Decisions:**
-- **Three-tier architecture** — Clean separation of concerns
+- **Three Tier architecture** — Clean separation of concerns
 - **Adapter pattern for AI** — Swap providers (OpenAI/Claude) via environment variable
 - **SQLite for MVP** — Zero-config, with clear migration path to PostgreSQL
 - **JWT authentication** — Stateless auth with httpOnly cookies
